@@ -1,0 +1,6 @@
+client_api.json
+/venv
+/linux_venv
+/src/__pycache__
+
+.env
