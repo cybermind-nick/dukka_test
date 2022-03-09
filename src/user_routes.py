@@ -1,10 +1,14 @@
+from asyncio.base_subprocess import ReadSubprocessPipeProto
+from datetime import date, datetime
 import os
+from unicodedata import name
+from urllib import response
 from flask import Blueprint, jsonify, request, request_started
 from flask_httpauth import HTTPBasicAuth
 from werkzeug.security import check_password_hash, generate_password_hash
 import validators
-from .models import User, db
-from flask_jwt_extended import JWTManager, create_access_token, create_refresh_token, jwt_required
+from .models import Purchase, User, db
+from flask_jwt_extended import JWTManager, create_access_token, create_refresh_token, jwt_required, get_jwt_identity
 
 user = Blueprint("user", __name__, url_prefix="/user")
 
@@ -19,28 +23,30 @@ def register():
     username = request.json["username"]
     email = request.json["email"]
     password = request.json["password"]
+    phone = request.json["phone"]
+    address = request.json["address"]
 
     if User.query.filter_by(email=email).first() is not None:
-        jsonify({"error": "email already exists"}), 409
+        return jsonify({"error": "email already exists"}), 409
     
     if User.query.filter_by(username=username).first() is not None:
-        jsonify({"error": "username already exists"}), 409
+        return jsonify({"error": "username already exists"}), 409
 
     if len(password) < 6:
-        jsonify({"error": "password too short"}), 400
+        return jsonify({"error": "password too short"}), 400
 
     if len(username) < 3:
-        jsonify({"error": "username too short"}), 400
+        return jsonify({"error": "username too short"}), 400
     
     if not username.isalnum():
-        jsonify({"error": "username should be alphanumeric"}), 400
+        return jsonify({"error": "username should be alphanumeric"}), 400
     
     if not validators.email(email):
-        jsonify({"error": "email not valid"}), 400
+        return jsonify({"error": "email not valid"}), 400
 
     pwd_hash = generate_password_hash(password)
 
-    user = User(username=username, password=pwd_hash, email=email)
+    user = User(username=username, password=pwd_hash, email=email, address=address, phone=phone)
 
     db.session.add(user)
     db.session.commit()
@@ -49,7 +55,9 @@ def register():
         "message": "user created",
         "User": {
             "username": username,
-            "email": email
+            "email": email,
+            "phone": phone,
+            "address": address
         }
     }), 201
 
@@ -80,13 +88,50 @@ def login():
         'error': 'Wring credentials'
     }), 401
 
-# @user.route("/purchase", endpoint='purchase', methods=['POST'])
-# @jwt_required
-# def purchase():
+@user.post('/purchase')
+@jwt_required()
+def purchase():
 
-#     return jsonify("purchase")
+    item = request.json.get('item')
+    amount = request.json.get('amount')
+
+    user_id = get_jwt_identity()
+
+    user = User.query.filter_by(id=user_id).first()
+
+    purchase = Purchase(item=item, user_id=user_id, amount=amount)
+    db.session.add(purchase)
+    db.session.commit()
+
+    return jsonify({
+        "purchase by": user.username,
+        "item": item,
+        "amount": amount,
+        }), 200
+
+
 
 @user.get('/receipt')
-@jwt_required
+@jwt_required()
 def receipt():
-    pass
+
+    from src.receipt import generate_receipt
+
+    user_id = get_jwt_identity()
+
+    purchase = Purchase.query.filter_by(user_id=user_id).first()
+
+    user = User.query.filter_by(id=user_id).first()
+
+
+    generate_receipt(
+        item=purchase.item, amount=purchase.amount,
+        name= user.username, phone=user.phone, address=user.address,
+        email=user.email, date=datetime.now().date()
+        )
+
+   
+    return jsonify({
+        "item": purchase.item,
+        "amount": purchase.amount
+    }), 200
