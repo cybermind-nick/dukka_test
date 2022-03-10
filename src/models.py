@@ -14,6 +14,7 @@ db_path = "sqlite:///{}".format(os.path.join(basedir, db_filename))
 db = SQLAlchemy()
 
 
+# sqlite database configuration
 def db_setup(app):
     app.config["SQLALCHEMY_DATABASE_URI"] = db_path
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
@@ -36,9 +37,6 @@ class User(db.Model):
     phone = db.Column(db.Integer, nullable = False, unique=True)
     purchase = db.relationship('Purchase', backref="user")
 
-    # token = db.Column(db.String(32), unique=True, index=True)
-    # token_expiration = db.Column(db.DateTime)
-
 
 class Purchase(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -46,6 +44,3 @@ class Purchase(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     purchased_at = db.Column(db.DateTime, default=datetime.now())
     amount = db.Column(db.Integer, nullable=False)
-
-# class Item(db.Model):
-#     item_id = db.Column(db.Integer)

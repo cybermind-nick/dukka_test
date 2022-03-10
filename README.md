@@ -7,8 +7,7 @@ Primary API routes start at [dukka-test.herokuapp.com/user](dukka-test.herokuapp
 
 Test the API endpoints using an API client such as Postman or RapidAPI
 
-Access to generate receipts is not provided. All receipts are stored at the root
+Unauthorised access to generated receipts is not provided. All receipts are stored at the root
 directory in a `receipts/` folder
 
 Authorised receipt download at endpoint [dukka-test.herokuapp.com/user/receipt/download](dukka-test.herokuapp.com/user/receipt/download)
-
