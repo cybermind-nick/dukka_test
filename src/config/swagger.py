@@ -5,7 +5,7 @@ template = {
         "description": "Transaction Receipt Generation endpoints",
         "contact": {
             "email": "nickifeajika@gmail.com",
-            "url": "github.com/cybermind-nick"
+            # "url": "github.com/cybermind-nick"
         },
         "termsOfService": "github.com/cybermind-nick",
         "version": "1.0"
@@ -33,7 +33,7 @@ swagger_config = {
     "specs": [
         {
             "endpoint": 'apispec',
-            "route": 'apispec.json',
+            "route": '/apispec.json',
             "rule_filter": lambda rule: True,
             "model_filter": lambda tag: True
         }

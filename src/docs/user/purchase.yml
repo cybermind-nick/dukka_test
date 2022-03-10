@@ -1,0 +1,32 @@
+User Software License Purchase 
+---
+tags:
+  - Purchase
+parameters:
+  - in: header
+    name: Authorization
+    description: Header should have a JWT Bearer token from login
+    required: true
+  - in: body
+    name: body
+    description: Body should have the purchase information (For software licenses)
+    required: true
+    schema:
+      type: object
+      required:
+        - "item"
+        - "amount"
+      properties:
+        item:
+          type: "item"
+          example: "Task Manager Pro (1 year license)"
+        amount:
+          type: "amount"
+          example: "1500"
+
+responses:
+  200:
+    description: Successful Purchase
+  
+  401:
+    description: Authentication error

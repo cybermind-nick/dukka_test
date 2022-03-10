@@ -9,6 +9,7 @@ from werkzeug.security import check_password_hash, generate_password_hash
 import validators
 from .models import Purchase, User, db
 from flask_jwt_extended import JWTManager, create_access_token, create_refresh_token, jwt_required, get_jwt_identity
+from flasgger import swag_from
 
 user = Blueprint("user", __name__, url_prefix="/user")
 
@@ -19,6 +20,7 @@ def index():
     return jsonify("User endpoints")
 
 @user.post("/register")
+@swag_from('./docs/user/register.yml')
 def register():
     username = request.json["username"]
     email = request.json["email"]
@@ -62,6 +64,7 @@ def register():
     }), 201
 
 @user.post('/login')
+@swag_from('./docs/user/login.yml')
 def login():
     email = request.json.get('email', '')
     password = request.json.get('password', '')
@@ -133,5 +136,6 @@ def receipt():
    
     return jsonify({
         "item": purchase.item,
-        "amount": purchase.amount
+        "amount": purchase.amount,
+        "message": "receipt generated and saved"
     }), 200

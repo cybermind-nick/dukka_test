@@ -1,0 +1,40 @@
+User Registration
+---
+tags:
+  - Authentication
+parameters:
+  - name: body
+    description: The body should contain the user Registration data
+    in: body
+    required: true
+    schema:
+      type: object
+      required:
+        - "email"
+        - "password"
+        - "username"
+        - "phone"
+        - "address"
+      properties:
+        email:
+          type: "email"
+          example: "john@email.com"
+        username:
+          type: "username"
+          example: "usernamex"
+        password:
+          type: "string"
+          format: password
+          example: "********"
+        phone:
+          type: "phone_number"
+          example: "08104523722"
+        address:
+          type: "address"
+          example: "Lagos, Nigeria"
+responses:
+  201:
+    description: When a user successfully logs in
+
+  400:
+    description: Fails to Register due to bad request data
