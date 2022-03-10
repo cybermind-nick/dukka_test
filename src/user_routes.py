@@ -153,8 +153,8 @@ def download():
 
     user = User.query.filter_by(id=user_id).first()
 
-    if os.path.exists(f'receipts/{user.phone}.pdf'):
-        return send_file(f'receipts/{user.phone}.pdf', as_attachment=False)
+    if os.path.exists(f'./receipts/{user.phone}.pdf'):
+        return send_file(f'./receipts/{user.phone}.pdf', as_attachment=True)
     
     else:
         return jsonify({
