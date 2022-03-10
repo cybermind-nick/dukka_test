@@ -125,6 +125,8 @@ def receipt():
 
         user = User.query.filter_by(id=user_id).first()
 
+        print(user.phone)
+
 
         generate_receipt(
             item=purchase.item, amount=purchase.amount,
@@ -151,8 +153,10 @@ def download():
 
     user = User.query.filter_by(id=user_id).first()
 
-    if os.path.exists(f'receipts/{user.phone}.pdf'):
-        return send_file(f'receipts/{user.phone}.pdf', as_attachment=True)
+    print(user.phone)
+
+    if os.path.exists(f'../receipts/{user.phone}.pdf'):
+        return send_file(f'../receipts/{user.phone}.pdf', as_attachment=True)
     
     else:
         return jsonify({
