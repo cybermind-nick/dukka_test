@@ -154,7 +154,8 @@ def download():
     user = User.query.filter_by(id=user_id).first()
 
     print(user.phone)
-
+    boo = os.path.exists(f'../receipts/{user.phone}.pdf')
+    print(boo)
     if os.path.exists(f'../receipts/{user.phone}.pdf'):
         return send_file(f'../receipts/{user.phone}.pdf', as_attachment=True)
     
