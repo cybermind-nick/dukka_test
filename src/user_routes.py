@@ -156,8 +156,11 @@ def download():
     # if os.path.exists(f'./receipts/{user.phone}.pdf'):
     #     return send_file(f'./receipts/{user.phone}.pdf', as_attachment=True)
 
-    if os.path.exists(f'../{user.phone}.pdf'):
-        return send_file(f'../{user.phone}.pdf', as_attachment=True)
+    # dirty fix
+    basedir = os.path.abspath(os.path.dirname(__file__)) + '/' + str(user.phone) + '.pdf'
+    print(basedir)
+    if os.path.isfile(basedir):
+        return send_file(basedir, as_attachment=True)
     
     else:
         return jsonify({

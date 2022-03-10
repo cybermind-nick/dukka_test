@@ -32,4 +32,4 @@ def generate_receipt(item: str, date: str, amount: str, name: str, phone: str, e
     pdf.cell(0,10, f'{amount}', align="R")
 
     # pdf.output(f'src/receipts/{phone}.pdf')
-    pdf.output(f'{phone}.pdf') # dirty fix
+    pdf.output(f'src/{phone}.pdf') # dirty fix
