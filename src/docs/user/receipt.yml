@@ -1,0 +1,16 @@
+Generate receipt
+---
+tags:
+  - receipt
+parameters:
+  - in: header
+    name: Authorization
+    description: Header Should have a JWT Bearer token
+    required: true
+
+responses:
+  200:
+    description: Receipt Successfully generated
+
+  403:
+    description: Bad request

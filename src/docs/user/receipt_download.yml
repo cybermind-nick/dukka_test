@@ -1,0 +1,13 @@
+Receipt Download
+---
+tags:
+  - receipt
+parameters:
+  - in: header
+    name: Authorization
+    description: Header should have a JWT Bearer token
+    required: true
+
+responses:
+  404:
+    description: Resource not found

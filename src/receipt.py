@@ -25,7 +25,7 @@ def generate_receipt(item: str, date: str, amount: str, name: str, phone: str, e
     pdf.cell(10,10, f'{address}', center=True, ln=1)
     pdf.cell(10,10, f'{phone}', center=True, ln=1)
     pdf.cell(10,10, f'{email}', center=True, ln=1)
-    pdf.cell(60,10, 'purchase', border=1)
+    pdf.cell(60,10, 'Purchase', border=1)
     pdf.cell(80,10, f'{item}', border=1, ln=1)
     
     pdf.cell(0,10, "License cost: ", align='L')

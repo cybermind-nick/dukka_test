@@ -18,10 +18,10 @@ parameters:
         - "amount"
       properties:
         item:
-          type: "item"
+          type: "string"
           example: "Task Manager Pro (1 year license)"
         amount:
-          type: "amount"
+          type: "string"
           example: "1500"
 
 responses:

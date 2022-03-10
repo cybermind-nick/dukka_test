@@ -1,19 +1,14 @@
-from asyncio.base_subprocess import ReadSubprocessPipeProto
-from datetime import date, datetime
+from datetime import datetime
 import os
-from unicodedata import name
-from urllib import response
-from flask import Blueprint, jsonify, request, request_started
-from flask_httpauth import HTTPBasicAuth
+from flask import Blueprint, jsonify, request, send_file
 from werkzeug.security import check_password_hash, generate_password_hash
 import validators
 from .models import Purchase, User, db
-from flask_jwt_extended import JWTManager, create_access_token, create_refresh_token, jwt_required, get_jwt_identity
+from flask_jwt_extended import create_access_token, create_refresh_token, jwt_required, get_jwt_identity
 from flasgger import swag_from
+from src.receipt import generate_receipt
 
 user = Blueprint("user", __name__, url_prefix="/user")
-
-auth = HTTPBasicAuth()
 
 @user.get("/")
 def index():
@@ -91,8 +86,11 @@ def login():
         'error': 'Wring credentials'
     }), 401
 
+
+# item purchase
 @user.post('/purchase')
 @jwt_required()
+@swag_from('./docs/user/purchase.yml')
 def purchase():
 
     item = request.json.get('item')
@@ -113,29 +111,50 @@ def purchase():
         }), 200
 
 
-
+# generate receipt for user
 @user.get('/receipt')
 @jwt_required()
+@swag_from('./docs/user/receipt.yml')
 def receipt():
-
-    from src.receipt import generate_receipt
 
     user_id = get_jwt_identity()
 
     purchase = Purchase.query.filter_by(user_id=user_id).first()
 
+    if purchase:
+
+        user = User.query.filter_by(id=user_id).first()
+
+
+        generate_receipt(
+            item=purchase.item, amount=purchase.amount,
+            name= user.username, phone=user.phone, address=user.address,
+            email=user.email, date=datetime.now().date()
+            )
+
+        return jsonify({
+            "item": purchase.item,
+            "amount": purchase.amount,
+            "message": "receipt generated and saved"
+        }), 200
+
+    else:
+        return jsonify({
+            "error": "No purchase on account, cannot generate receipt"
+        }), 403
+
+@user.get('/receipt/download')
+@jwt_required()
+@swag_from('./docs/user/receipt_download.yml')
+def download():
+    user_id = get_jwt_identity()
+
     user = User.query.filter_by(id=user_id).first()
 
-
-    generate_receipt(
-        item=purchase.item, amount=purchase.amount,
-        name= user.username, phone=user.phone, address=user.address,
-        email=user.email, date=datetime.now().date()
-        )
-
-   
-    return jsonify({
-        "item": purchase.item,
-        "amount": purchase.amount,
-        "message": "receipt generated and saved"
-    }), 200
+    if os.path.exists(f'../receipts/{user.phone}.pdf'):
+        return send_file(f'../receipts/{user.phone}.pdf', as_attachment=True)
+    
+    else:
+        return jsonify({
+            "error": "Receipt not found"
+        }), 404
