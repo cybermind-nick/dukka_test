@@ -11,3 +11,5 @@ Unauthorised access to generated receipts is not provided. All receipts are stor
 directory in a `receipts/` folder
 
 Authorised receipt download at endpoint [dukka-test.herokuapp.com/user/receipt/download](dukka-test.herokuapp.com/user/receipt/download)
+
+**Note**: The database is cleared everytime the dyno sleeps. All activites will need to be repeated
