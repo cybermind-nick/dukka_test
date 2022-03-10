@@ -20,10 +20,12 @@ def create_app():
 
 
 
-    print(db_filename)
-
     db_setup(app)
-    db_drop_and_create()
+
+    if not os.path.exists('database.db'):
+        db_drop_and_create()
+
+    # registering /user endpoint   
     app.register_blueprint(user)
 
     JWT_SECRET_KEY = os.environ.get('JWT_SECRET_KEY')
