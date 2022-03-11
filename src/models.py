@@ -23,7 +23,6 @@ def db_setup(app):
 
 
 def db_drop_and_create():
-    db.drop_all()
     db.create_all()
 
 # defining models
