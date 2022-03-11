@@ -22,8 +22,9 @@ def create_app():
 
     db_setup(app)
 
-    if not os.path.exists('database.db'):
-        db_drop_and_create()
+    # if not os.path.exists('database.db'):
+    #     db_drop_and_create()
+    db_drop_and_create()
 
     # registering /user endpoint   
     app.register_blueprint(user)
