@@ -1,5 +1,10 @@
 # Dukka Backend Engineer Test
 
+## Task: Create a transaction receipt generating backend for with access control
+
+
+#### _A quick and dirty solution to the test_
+
 Test challenge completed and hosted on heroku at:
 [dukka-test.herokuapp.com](dukka-test.herokuapp.com)
 
